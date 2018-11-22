@@ -1,5 +1,7 @@
 package medium;
 
+import basements.ListNode;
+
 /**
  *  相交链表
  *  编写一个程序，找到两个单链表相交的起始节点。
@@ -25,5 +27,59 @@ package medium;
  * 程序尽量满足 O(n) 时间复杂度，且仅用 O(1) 内存。
  */
 public class IntersectionNode {
+    public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
+        if (headA == null || headB == null){
+            return null;
+        }
+        ListLengthAndTail listLengthAndTail = findListLengthAndTail(headA);
+        ListLengthAndTail listLengthAndTail1 = findListLengthAndTail(headB);
+        if (listLengthAndTail.tail != listLengthAndTail1.tail){
+            return null;
+        }
 
+        ListNode pre, next;
+        if (listLengthAndTail.length > listLengthAndTail1.length){
+            pre = headA;
+            next = headB;
+        }else{
+            pre = headB;
+            next = headA;
+        }
+
+        int aheadSteps = Math.abs(listLengthAndTail.length - listLengthAndTail1.length);
+
+        //长度长的先走
+        for (int i = 0; i<aheadSteps; i++){
+            pre = pre.next;
+        }
+
+        while (pre != null && next != null){
+            if (pre == next){
+                return pre;
+            }
+
+            pre = pre.next;
+            next = next.next;
+        }
+
+        return null;
+    }
+
+    private ListLengthAndTail findListLengthAndTail(ListNode head){
+        ListLengthAndTail result = new ListLengthAndTail();
+        if (head == null){
+            return result;
+        }
+        for (;head.next != null;head = head.next){
+            result.length += 1;
+        }
+        result.length += 1;
+        result.tail = head;
+        return result;
+    }
+
+    private class ListLengthAndTail {
+        int length = 0;
+        ListNode tail = null;
+    }
 }
